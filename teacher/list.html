@@ -4,9 +4,37 @@
         <title>Teacher</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/style.css" rel="stylesheet">
+        <link href="../css/teachers.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     </head>
     <body>
-        Teacher
+        <div class="grid-teacher" id="teacherContainer">
+            
+        </div>
+        <script>
+            const dataMock = [
+                {id: 1232, name: 'Đoàn Huệ Anh', department: 'Toán', phone: '1232323', email: 'hueanh@gmail.com'},
+                {id: 1233, name: 'Nguyễn Minh Phương', department: 'Anh', phone: '1232323', email: 'minhphuong@gmail.com'},
+                {id: 1234, name: 'Trần Thị Mai', department: 'Văn', phone: '1232323', email: 'mai@gmail.com'},
+                {id: 1235, name: 'Nguyễn Phúc Vinh', department: 'Địa Lý', phone: '1232323', email: 'vinh@gmail.com'},
+                {id: 1236, name: 'Lê Tố Uyên', department: 'Lịch Sử', phone: '1232323', email: 'touyen@gmail.com'},
+                {id: 1237, name: 'Phan Mỹ Linh', department: 'Sinh học', phone: '1232323', email: 'mylinh@gmail.com'}
+            ];
+            let innerHtmlData = '';
+            dataMock.forEach(item=>{
+                innerHtmlData+= `<div class="teacher-card">
+                <i class="fa-solid fa-ellipsis three-dot"></i>
+                <div class="avatar"></div>
+                <h3 class="name">${item.name}</h3>
+                <span class="department">${item.department}</span>
+                <div class="column-contact">
+                    <a class="tag-link" href="tel:${item.phone}"><i class="phone-icon fa-solid fa-phone icon" data-id="${item.id}"></i></a><a class="tag-link" href="mailto:${item.email}?subject="><i data-id="${item.id}" class="email-icon fa-solid fa-envelope icon"></i></a>
+    
+                </div>
+            </div>`;
+            });
+            const tableElement = document.getElementById('teacherContainer');
+            tableElement.innerHTML = innerHtmlData;
+        </script>
     </body>
 </html>

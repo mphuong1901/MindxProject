@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thời Khóa Biểu</title>
+    <link rel="stylesheet" href="/css/timetable.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Thời Khóa Biểu</h1>
+        <table id="timetable">
+            <thead>
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Thứ 2</th>
+                    <th>Thứ 3</th>
+                    <th>Thứ 4</th>
+                    <th>Thứ 5</th>
+                    <th>Thứ 6</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>8:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>9:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>10:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>11:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>12:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>13:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>14:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>15:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>16:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Thêm Môn Học</h2>
+        <form id="add-subject-form">
+            <label for="time">Thời gian:</label>
+            <input type="text" id="time" placeholder="Ví dụ: 8:00">
+            <label for="day">Ngày:</label>
+            <select id="day">
+                <option value="0">Thứ 2</option>
+                <option value="1">Thứ 3</option>
+                <option value="2">Thứ 4</option>
+                <option value="3">Thứ 5</option>
+                <option value="4">Thứ 6</option>
+            </select>
+            <label for="subject">Môn học:</label>
+            <input type="text" id="subject" placeholder="Nhập tên môn học">
+            <button type="submit">Thêm / Chỉnh sửa</button>
+        </form>
+    </div>
+    <script>
+        // Hàm để lưu thời khóa biểu vào localStorage
+        function saveTimetable() {
+            const timetable = [];
+            const rows = document.querySelectorAll('#timetable tbody tr');
+            rows.forEach(row => {
+                const time = row.cells[0].textContent;
+                const subjects = Array.from(row.cells).slice(1).map(cell => cell.textContent);
+                timetable.push({ time, subjects });
+            });
+            localStorage.setItem('timetable', JSON.stringify(timetable));
+        }
+
+        // Hàm để tải thời khóa biểu từ localStorage
+        function loadTimetable() {
+            const timetable = JSON.parse(localStorage.getItem('timetable')) || []; 
+            const rows = document.querySelectorAll('#timetable tbody tr'); 
+
+            // Duyệt qua từng mục trong thời khóa biểu
+            timetable.forEach(entry => {
+                const time = entry.time; // Lấy thời gian
+                const subjects = entry.subjects; // Lấy danh sách môn học
+
+                // Duyệt qua các hàng trong bảng để tìm hàng tương ứng với thời gian
+                rows.forEach(row => {
+                    const timeCell = row.cells[0].textContent; // Lấy thời gian từ ô đầu tiên
+                    if (timeCell === time) {
+                        subjects.forEach((subject, index) => {
+                            if (subject) {
+                                row.cells[index + 1].textContent = subject; // +1 vì cột đầu tiên là thời gian
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        document.getElementById('add-subject-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const time = document.getElementById('time').value;
+            const day = document.getElementById('day').value; 
+            const subject = document.getElementById('subject').value;
+
+            const rows = document.querySelectorAll('#timetable tbody tr');
+            let rowToUpdate;
+            rows.forEach(row => {
+                const timeCell = row.cells[0].textContent; 
+                if (timeCell === time) {
+                    rowToUpdate = row;
+                }
+            });
+
+            if (rowToUpdate) {
+                rowToUpdate.cells[parseInt(day) + 1].textContent = subject; 
+                saveTimetable();
+            } else {
+                alert('Không tìm thấy thời gian trong thời khóa biểu.');
+            }
+
+            document.getElementById('time').value = '';
+            document.getElementById('subject').value = '';
+        });
+
+        loadTimetable();
+    </script>
+</body>
+</html>

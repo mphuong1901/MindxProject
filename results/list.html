@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả học sinh</title>
+    <link rel="stylesheet" href="../css/result.css">
+</head>
+<body>
+<div class="container">
+    <h1>Kết quả học sinh</h1>
+    <div id="student-results"></div>
+    <h2>Thêm học sinh</h2>
+    <input type="text" id="student-name" placeholder="Tên học sinh">
+    <input type="number" id="math-score" placeholder="Điểm Toán" step="0.1">
+    <input type="number" id="literature-score" placeholder="Điểm Văn" step="0.1">
+    <input type="number" id="english-score" placeholder="Điểm Anh Văn" step="0.1">
+    <input type="number" id="geography-score" placeholder="Điểm Địa Lý" step="0.1">
+    <input type="number" id="biology-score" placeholder="Điểm Sinh Học" step="0.1">
+    <input type="number" id="history-score" placeholder="Điểm Lịch Sử" step="0.1">
+    <button onclick="addStudent()">Thêm điểm cho học sinh</button>
+</div>
+
+    <script>
+        let students = [];
+
+        function loadFromLocalStorage() {
+            const storedStudents = localStorage.getItem('students');
+            if (storedStudents) {
+                students = JSON.parse(storedStudents);
+                renderStudents();
+            }
+        }
+
+        function renderStudents() {
+            const resultsContainer = document.getElementById('student-results');
+            resultsContainer.innerHTML = '';
+            students.forEach((student, index) => {
+                const studentDiv = document.createElement('div');
+                studentDiv.className = 'student';
+                studentDiv.innerHTML = `
+                    <h2>${student.name}</h2>
+                    <p>Toán: ${student.results["Toán"]}</p>
+                    <p>Văn: ${student.results["Văn"]}</p>
+                    <p>Anh Văn: ${student.results["Anh Văn"]}</p>
+                    <p>Địa Lý: ${student.results["Địa Lý"]}</p>
+                    <p>Sinh Học: ${student.results["Sinh Học"]}</p>
+                    <p>Lịch Sử: ${student.results["Lịch Sử"]}</p>
+                    <div class="actions">
+                        <button onclick="removeStudent(${index})">Xóa</button>
+                    </div>
+                `;
+                resultsContainer.appendChild(studentDiv);
+            });
+        }
+
+        function addStudent() {
+            const name = document.getElementById('student-name').value;
+            const mathScore = parseFloat(document.getElementById('math-score').value);
+            const literatureScore = parseFloat(document.getElementById('literature-score').value);
+            const englishScore = parseFloat(document.getElementById('english-score').value);
+            const geographyScore = parseFloat(document.getElementById('geography-score').value);
+            const biologyScore = parseFloat(document.getElementById('biology-score').value);
+            const historyScore = parseFloat(document.getElementById('history-score').value);
+            // isNaN -> not a number
+            if (name && !isNaN(mathScore) && !isNaN(literatureScore) && !isNaN(englishScore) && 
+                !isNaN(geographyScore) && !isNaN(biologyScore) && !isNaN(historyScore)) {
+                const student = {
+                    name: name,
+                    results: {
+                        "Toán": mathScore,
+                        "Văn": literatureScore,
+                        "Anh Văn": englishScore,
+                        "Địa Lý": geographyScore,
+                        "Sinh Học": biologyScore,
+                        "Lịch Sử": historyScore
+                    }
+                };
+                students.push(student);
+                saveToLocalStorage();
+                renderStudents();
+                clearInputs();
+            } else {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('students', JSON.stringify(students));
+        }
+
+        function removeStudent(index) {
+            students.splice(index, 1);
+            saveToLocalStorage();
+            renderStudents();
+        }
+
+        function clearInputs() {
+            document.getElementById('student-name').value = '';
+            document.getElementById('math-score').value = '';
+            document.getElementById('literature-score').value = '';
+            document.getElementById('english-score').value = '';
+            document.getElementById('geography-score').value = '';
+            document.getElementById('biology-score').value = '';
+            document.getElementById('history-score').value = '';
+        }
+
+        loadFromLocalStorage();
+    </script>
+</body>
+</html>
